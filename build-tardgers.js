@@ -1,12 +1,12 @@
 /*
- * build-tardgers.js — gera o manifesto da coleção V2 "Tardgers" e injeta em index.html
+ * build-tardgers.js — gera o manifesto da coleção V2 "Tardgers" e injeta em maker.html
  * como window.TARDGERS, no MESMO formato de window.TRAITS.
  *
  * COMO RODAR (Node 18+):
  *     node build-tardgers.js [caminho_da_pasta_tardgers]
  *
  *   Sem argumento, usa SRC_DEFAULT abaixo. As traits NÃO são copiadas pro repo —
- *   viram base64 embutido no index.html (igual as traits da coleção original).
+ *   viram base64 embutido no maker.html (igual as traits da coleção original).
  *
  * O QUE FAZ:
  *   - Lê as 7 subpastas, normaliza os nomes pras 7 camadas canônicas.
@@ -22,7 +22,7 @@ const path = require("path");
 // pasta de origem (fora do repo). Troque aqui ou passe como argumento.
 const SRC_DEFAULT = "C:\\Users\\kusht\\Downloads\\Tardgers";
 const SRC = process.argv[2] || SRC_DEFAULT;
-const HTML = path.join(__dirname, "index.html");
+const HTML = path.join(__dirname, "maker.html");
 
 // nome-da-subpasta -> camada canônica (case-insensitive)
 const FOLDER_TO_LAYER = {
@@ -112,4 +112,4 @@ fs.writeFileSync(HTML, html);
 console.log("\n🐸 Tardgers gerados:");
 perLayer.forEach(l => console.log("   " + l));
 console.log(`   TOTAL: ${total} traits`);
-console.log(`\nindex.html agora: ${(fs.statSync(HTML).size / 1048576).toFixed(2)} MB`);
+console.log(`\nmaker.html agora: ${(fs.statSync(HTML).size / 1048576).toFixed(2)} MB`);

@@ -1,19 +1,22 @@
-# Honey Badgers — Maker + Marketplace
+# Honey Badgers — Lore + Maker + Marketplace
 
-Dois sites estáticos linkados, sem build, sem backend, sem API key no browser.
+Três sites estáticos linkados, sem build, sem backend, sem API key no browser.
 Prontos pra jogar na Vercel (ou qualquer static host / IPFS) arrastando a pasta.
 
 ## Arquivos
 
 | Arquivo | O que é |
 |---|---|
-| `index.html` | **Badger Maker** — monta um badger a partir das 92 traits, adiciona texto em cima/embaixo, baixa em HD (1200×1200). É a home. |
+| `index.html` | **LORE** (home) — thread de imageboard estilo Yotsuba/4chan contando a história dos badgers, com os 17 prints da thread fundadora do AKVA embutidos (base64). |
+| `maker.html` | **Badger Maker** — monta um badger a partir das 92 traits, adiciona texto em cima/embaixo, baixa em HD (1200×1200). |
 | `marketplace.html` | **SETT ROAD** — vitrine estilo darknet-market dos 9999 badgers. Não vende: cada card redireciona pro Satflow + explorer. |
 | `fetch-sub100k.js` | Script Node (roda 1x na máquina) que descobre quais badgers são "sub-100k" (inscription number < 100000). |
 | `inscriptionlist.txt` | Lista dos 9999 inscription IDs (um por linha). |
-| `build-tardgers.js` | Script Node que gera o manifesto da coleção V2 "Tardgers" e injeta em `index.html` como `window.TARDGERS`. |
+| `build-tardgers.js` | Script Node que gera o manifesto da coleção V2 "Tardgers" e injeta em `maker.html` como `window.TARDGERS`. |
 
-As duas páginas se linkam entre si (nav no topo: `maker` ↔ `marketplace`).
+As três páginas se linkam entre si (nav no topo: `lore` ↔ `maker` ↔ `marketplace`).
+Os prints da lore ficam embutidos em base64 (redimensionados pra ~600px de largura);
+os PNGs crus não vão pro repo, igual às traits.
 
 ---
 
