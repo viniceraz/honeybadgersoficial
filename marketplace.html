@@ -202,13 +202,38 @@
     .brand h1{font-size:22px;}
     .grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
   }
+
+  /* ===== TARDGERS — modo cursed / deep-fried (100% reversível) ===== */
+  body.tard-mode, body.tard-mode * { font-family:"Comic Sans MS","Comic Sans","Chalkboard SE",cursive !important; }
+  body.tard-mode { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Ctext y='24' font-size='24'%3E🐸%3C/text%3E%3C/svg%3E") 6 6, auto; }
+  body.tard-mode .shell { filter: contrast(1.32) saturate(2.05) brightness(1.04); }
+  body.tard-mode .masthead { filter: contrast(1.5) saturate(2.4); }
+  body.tard-mode .brand h1 { animation: tardhue 4s linear infinite; text-shadow:2px 2px 0 #f0f,-2px -2px 0 #0ff,0 0 12px #ff0; }
+  @keyframes tardhue { to { filter: hue-rotate(360deg); } }
+  body.tard-mode .card { border-color:#ff00ea !important; box-shadow:0 0 8px rgba(255,0,234,.5); }
+  body.tard-mode .card:nth-child(3n)   { transform:rotate(-2.5deg); }
+  body.tard-mode .card:nth-child(3n+1) { transform:rotate(2deg); }
+  body.tard-mode .card:nth-child(3n+2) { transform:rotate(-1.2deg); }
+  body.tard-mode .cbtns a { box-shadow:0 0 8px #f0f, 0 0 14px #0ff !important; }
+  body.tard-mode .accountbar { background:#ff2bd6 !important; color:#000 !important; }
+  body.tard-mode .seal-img { animation: tardspin 5s linear infinite; }
+  @keyframes tardspin { to { transform: rotate(360deg); } }
+  /* botao toggle */
+  .tardtoggle{ font:inherit; font-weight:bold; cursor:pointer; letter-spacing:1px;
+    background:linear-gradient(#c6f27a,#7fd53f); border:1px solid #4f7d2a; color:#173a05;
+    padding:1px 8px; border-radius:4px; }
+  .tardtoggle:hover{ filter:brightness(1.08); }
+  .tardtoggle.on{ background:linear-gradient(#ff5df0,#a11bd6); border-color:#ff0; color:#fff;
+    box-shadow:0 0 8px #f0f,0 0 14px #0ff; }
 </style>
 </head>
 <body>
+<script>try{document.body.classList.toggle("tard-mode", localStorage.getItem("tardMode")==="1");}catch(e){}</script>
 
 <div class="accountbar">
   <span><span class="dot"></span>connected via tor exit node</span>
   <span>[ <a href="index.html" style="color:var(--green-glow)">← badger maker</a> ]</span>
+  <span><button id="tardtoggle" class="tardtoggle" type="button" title="modo cursed V2">🐸 TARDGERS</button></span>
   <span class="grow"></span>
   <span>balance: <span class="bal">0.00000000 ₿</span></span>
   <span>messages <b>(0)</b></span>
@@ -423,6 +448,15 @@ function SidePortal({range,setRange}){
 
 ReactDOM.createRoot(document.getElementById('main')).render(<App/>);
 document.getElementById('fcount').textContent = TOTAL.toLocaleString();
+</script>
+<script>
+(function(){
+  var b=document.getElementById("tardtoggle");
+  function apply(on){ document.body.classList.toggle("tard-mode", on); if(b){ b.classList.toggle("on", on); b.textContent = on ? "🐸 TARDGERS: ON" : "🐸 TARDGERS"; } }
+  var on=false; try{ on = localStorage.getItem("tardMode")==="1"; }catch(e){}
+  apply(on);
+  if(b) b.addEventListener("click", function(){ on=!on; try{ localStorage.setItem("tardMode", on?"1":"0"); }catch(e){} apply(on); });
+})();
 </script>
 </body>
 </html>

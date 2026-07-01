@@ -11,8 +11,32 @@ Prontos pra jogar na Vercel (ou qualquer static host / IPFS) arrastando a pasta.
 | `marketplace.html` | **SETT ROAD** — vitrine estilo darknet-market dos 9999 badgers. Não vende: cada card redireciona pro Satflow + explorer. |
 | `fetch-sub100k.js` | Script Node (roda 1x na máquina) que descobre quais badgers são "sub-100k" (inscription number < 100000). |
 | `inscriptionlist.txt` | Lista dos 9999 inscription IDs (um por linha). |
+| `build-tardgers.js` | Script Node que gera o manifesto da coleção V2 "Tardgers" e injeta em `index.html` como `window.TARDGERS`. |
 
 As duas páginas se linkam entre si (nav no topo: `maker` ↔ `marketplace`).
+
+---
+
+## Coleção V2 "Tardgers" + modo cursed
+
+O maker tem uma segunda coleção, os **Tardgers** (mesma estrutura, arte diferente,
+92 traits nas mesmas 7 camadas). Um toggle **🐸 TARDGERS** no topo das duas páginas
+liga o modo cursed (deep-fried / Comic Sans / caos), persistido em `localStorage`
+(`tardMode`) e aplicado via classe `.tard-mode` no `<body>`. Ligado, o maker troca
+`window.TRAITS` por `window.TARDGERS`; desligado, volta 100% ao normal.
+
+**Regenerar o manifesto** (se atualizar as traits): as PNGs ficam numa pasta com 7
+subpastas (nomes normalizados no script: `BG→background, manes→mane, Body→body,
+eyes→eyes, claws→claws, head→headgear, artifacts→artifact`). Rode:
+
+```bash
+node build-tardgers.js "C:\caminho\da\pasta\Tardgers"
+```
+
+Sem argumento, usa o caminho padrão em `SRC_DEFAULT` no topo do script. Ele converte
+cada PNG em dataURL base64 e reescreve o bloco `window.TARDGERS` no `index.html`
+(idempotente — pode rodar quantas vezes quiser). As traits cruas **não** ficam no
+repo, igual às da V1 — só o base64 embutido.
 
 ---
 
