@@ -317,12 +317,23 @@ function drawText(ctx, size, text, atTop){
 }
 
 // ---------- composite ----------
-async function compose(canvas, size, sel, top, bottom){
+async function compose(canvas, size, sel, top, bottom, customBg){
   canvas.width=size; canvas.height=size;
   const ctx=canvas.getContext('2d');
   ctx.imageSmoothingEnabled=false;
   ctx.clearRect(0,0,size,size);
+  if(customBg){
+    try{
+      const bg=await loadImg(customBg);
+      ctx.imageSmoothingEnabled=true;                  // suaviza a foto (as traits seguem pixel-art)
+      const scale=Math.max(size/bg.width, size/bg.height);
+      const w=bg.width*scale, h=bg.height*scale;
+      ctx.drawImage(bg,(size-w)/2,(size-h)/2,w,h);      // cover: preenche o quadrado, corta o excesso
+      ctx.imageSmoothingEnabled=false;
+    }catch(e){}
+  }
   for(const l of LAYERS){
+    if(l==='background' && customBg) continue;          // BG customizado substitui a trait de fundo
     const t = T[l].find(x=>x.id===sel[l]);
     if(!t) continue;
     try{ const img=await loadImg(t.src); ctx.drawImage(img,0,0,size,size); }catch(e){}
@@ -348,11 +359,21 @@ function App(){
   const [post,setPost]=useState('13371337');
   const [kind,setKind]=useState('');
   const [busy,setBusy]=useState(false);
+  const [customBg,setCustomBg]=useState(null);
   const prev=useRef(null);
 
-  useEffect(()=>{ if(prev.current) compose(prev.current,480,sel,top,bottom); },[sel,top,bottom]);
+  useEffect(()=>{ if(prev.current) compose(prev.current,480,sel,top,bottom,customBg); },[sel,top,bottom,customBg]);
 
-  const pick=(layer,id)=>setSel(s=>({...s,[layer]:id}));
+  const pick=(layer,id)=>{ if(layer==='background') setCustomBg(null); setSel(s=>({...s,[layer]:id})); };
+
+  const onBgUpload=e=>{
+    const f=e.target.files&&e.target.files[0];
+    if(!f) return;
+    const reader=new FileReader();
+    reader.onload=()=>setCustomBg(reader.result);
+    reader.readAsDataURL(f);
+    e.target.value='';
+  };
 
   const roll=useCallback(()=>{
     const s={}; LAYERS.forEach(l=>{const a=T[l];s[l]=a[Math.floor(Math.random()*a.length)].id;});
@@ -364,14 +385,14 @@ function App(){
 
   const reset=()=>{
     const s={};LAYERS.forEach(l=>s[l]=T[l][0].id);setSel(s);
-    setTop('');setBottom('');setKind('');
+    setTop('');setBottom('');setKind('');setCustomBg(null);
   };
 
   const download=async()=>{
     setBusy(true);
     try{
       const c=document.createElement('canvas');
-      await compose(c,1200,sel,top,bottom);
+      await compose(c,1200,sel,top,bottom,customBg);
       await new Promise(r=>c.toBlob(b=>{
         const a=document.createElement('a');
         a.href=URL.createObjectURL(b);
@@ -432,7 +453,19 @@ function App(){
               ))}
             </div>
 
-            <div className="traits">
+            {tab==='background' && (
+              <div className="bgupload" style={{display:'flex',gap:'8px',alignItems:'center',flexWrap:'wrap',margin:'0 0 8px'}}>
+                <label className="btn sm" style={{cursor:'pointer',margin:0}}>
+                  ⬆ Upload your own
+                  <input type="file" accept="image/*" onChange={onBgUpload} style={{display:'none'}}/>
+                </label>
+                {customBg
+                  ? <button className="btn sm" onClick={()=>setCustomBg(null)}>✕ back to trait BG</button>
+                  : <span style={{fontSize:'11px',color:'var(--mute)'}}>use any photo as background</span>}
+                {customBg && <span style={{fontSize:'11px',color:'var(--btc)',fontWeight:'bold'}}>● custom BG active</span>}
+              </div>
+            )}
+            <div className="traits" style={(tab==='background'&&customBg)?{opacity:.45}:undefined}>
               {items.map(it=>(
                 <div key={it.id}
                      className={"tcell"+(sel[tab]===it.id?" sel":"")}
