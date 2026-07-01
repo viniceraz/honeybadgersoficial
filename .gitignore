@@ -1,0 +1,11 @@
+# deps
+node_modules/
+
+# segredos / ambiente
+.env
+.env.*
+
+# SO / editor
+.DS_Store
+Thumbs.db
+.vscode/
